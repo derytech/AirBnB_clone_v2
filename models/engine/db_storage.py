@@ -1,12 +1,13 @@
-﻿#!/usr/bin/python3
+﻿
+#!/usr/bin/python3
 """Defines the DBStorage class."""
 
 import os
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, declarative_base
+from sqlalchemy.orm import scoped_session, sessionmaker
 
-
-Base = declarative_base()
+from models.base_model import Base
 
 
 class DBStorage:
@@ -16,11 +17,11 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        """Initialize the database engine and session."""
-        user = os.getenv("HBNB_MYSQL_USER", "hbnb_test")
-        password = os.getenv("HBNB_MYSQL_PWD", "hbnb_test_pwd")
-        host = os.getenv("HBNB_MYSQL_HOST", "localhost")
-        database = os.getenv("HBNB_MYSQL_DB", "hbnb_test_db")
+        """Initialize the database engine."""
+        user = os.getenv("HBNB_MYSQL_USER")
+        password = os.getenv("HBNB_MYSQL_PWD")
+        host = os.getenv("HBNB_MYSQL_HOST")
+        database = os.getenv("HBNB_MYSQL_DB")
 
         self.__engine = create_engine(
             "mysql+mysqldb://{}:{}@{}/{}".format(
@@ -34,7 +35,6 @@ class DBStorage:
 
     def all(self, cls=None):
         """Query all objects, optionally filtering by class."""
-        from models.base_model import BaseModel
         from models.user import User
         from models.state import State
         from models.city import City
@@ -43,7 +43,6 @@ class DBStorage:
         from models.review import Review
 
         classes = {
-            "BaseModel": BaseModel,
             "User": User,
             "State": State,
             "City": City,
@@ -93,6 +92,7 @@ class DBStorage:
         Base.metadata.create_all(self.__engine)
 
         session_factory = sessionmaker(
-            bind=self.__engine, expire_on_commit=False
+            bind=self.__engine,
+            expire_on_commit=False
         )
         self.__session = scoped_session(session_factory)

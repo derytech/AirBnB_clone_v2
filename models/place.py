@@ -2,10 +2,10 @@
 """Defines the Place class."""
 
 from sqlalchemy import Column, Float, Integer, String
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 
 
-class Place(BaseModel):
+class Place(BaseModel, Base):
     """Defines a Place."""
 
     __tablename__ = "places"

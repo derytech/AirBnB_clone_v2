@@ -1,3 +1,4 @@
+
 #!/usr/bin/python3
 """Defines the command interpreter for the AirBnB clone."""
 
@@ -60,7 +61,49 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
 
+        attributes = {}
+
+        for argument in args[1:]:
+            if "=" not in argument:
+                continue
+
+            key, value = argument.split("=", 1)
+            value = value.replace("_", " ")
+
+            if not value:
+                continue
+
+            if value.isdigit():
+                value = int(value)
+            else:
+                try:
+                    value = float(value)
+                except ValueError:
+                    pass
+
+            attributes[key] = value
+
+        # State requires a name.
+        if class_name == "State" and not attributes.get("name"):
+            return
+
+        # City requires a name and an existing State.
+        if class_name == "City":
+            state_id = attributes.get("state_id")
+            name = attributes.get("name")
+
+            if not state_id or not name:
+                return
+
+            states = storage.all(State)
+            if "State.{}".format(state_id) not in states:
+                return
+
         obj = self.classes[class_name]()
+
+        for key, value in attributes.items():
+            setattr(obj, key, value)
+
         obj.save()
         print(obj.id)
 
@@ -118,7 +161,7 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
             return
 
-        del objects[key]
+        storage.delete(objects[key])
         storage.save()
 
     def do_all(self, arg):

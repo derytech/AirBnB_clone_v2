@@ -2,10 +2,10 @@
 """Defines the Review class."""
 
 from sqlalchemy import Column, String
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 
 
-class Review(BaseModel):
+class Review(BaseModel, Base):
     """Defines a Review."""
 
     __tablename__ = "reviews"
