@@ -1,6 +1,7 @@
-﻿
-#!/usr/bin/python3
+﻿#!/usr/bin/python3
 """Defines the City class."""
+
+import os
 
 from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.orm import relationship
@@ -13,11 +14,13 @@ class City(BaseModel, Base):
 
     __tablename__ = "cities"
 
-    name = Column(String(128), nullable=False)
+    name = Column(String(128), nullable=False, default="")
     state_id = Column(
         String(60),
         ForeignKey("states.id"),
-        nullable=False
+        nullable=False,
+        default=""
     )
 
-    state = relationship("State", back_populates="cities")
+    if os.getenv("HBNB_TYPE_STORAGE") == "db":
+        state = relationship("State", back_populates="cities")

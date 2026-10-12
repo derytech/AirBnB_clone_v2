@@ -1,5 +1,4 @@
-﻿
-#!/usr/bin/python3
+﻿#!/usr/bin/python3
 """Defines the BaseModel class."""
 
 import uuid
@@ -25,18 +24,24 @@ class BaseModel:
 
     def __init__(self, *args, **kwargs):
         """Initialize a new BaseModel instance."""
-        if kwargs:
-            for key, value in kwargs.items():
-                if key == "__class__":
-                    continue
-                if key in ("created_at", "updated_at"):
-                    if isinstance(value, str):
-                        value = datetime.fromisoformat(value)
-                setattr(self, key, value)
-        else:
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.utcnow()
-            self.updated_at = datetime.utcnow()
+        table = getattr(self.__class__, "__table__", None)
+
+        if table is not None:
+            for column in table.columns:
+                if column.default is not None and column.default.is_scalar:
+                    setattr(self, column.name, column.default.arg)
+
+        self.id = str(uuid.uuid4())
+        self.created_at = datetime.utcnow()
+        self.updated_at = datetime.utcnow()
+
+        for key, value in kwargs.items():
+            if key == "__class__":
+                continue
+            if key in ("created_at", "updated_at"):
+                if isinstance(value, str):
+                    value = datetime.fromisoformat(value)
+            setattr(self, key, value)
 
     def __str__(self):
         """Return the string representation of the BaseModel."""

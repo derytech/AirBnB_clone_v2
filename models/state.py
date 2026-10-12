@@ -1,5 +1,4 @@
-﻿
-#!/usr/bin/python3
+﻿#!/usr/bin/python3
 """Defines the State class."""
 
 import os
@@ -15,7 +14,7 @@ class State(BaseModel, Base):
 
     __tablename__ = "states"
 
-    name = Column(String(128), nullable=False)
+    name = Column(String(128), nullable=False, default="")
 
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
         cities = relationship(
