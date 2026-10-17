@@ -54,9 +54,12 @@ class BaseModel:
         from models import storage
 
         self.updated_at = datetime.utcnow()
+
+        if self.__class__.__name__ == "BaseModel":
+            return
+
         storage.new(self)
         storage.save()
-
     def delete(self):
         """Delete the current instance from storage."""
         from models import storage
@@ -71,3 +74,4 @@ class BaseModel:
         obj_dict["created_at"] = self.created_at.isoformat()
         obj_dict["updated_at"] = self.updated_at.isoformat()
         return obj_dict
+
