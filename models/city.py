@@ -24,3 +24,8 @@ class City(BaseModel, Base):
 
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
         state = relationship("State", back_populates="cities")
+        places = relationship(
+            "Place",
+            back_populates="cities",
+            cascade="all, delete, delete-orphan"
+        )
