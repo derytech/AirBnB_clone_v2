@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 """Defines the command interpreter for the AirBnB clone."""
 

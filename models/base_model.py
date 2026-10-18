@@ -1,4 +1,4 @@
-﻿#!/usr/bin/python3
+#!/usr/bin/python3
 """Defines the BaseModel class."""
 
 import uuid
@@ -60,6 +60,7 @@ class BaseModel:
 
         storage.new(self)
         storage.save()
+
     def delete(self):
         """Delete the current instance from storage."""
         from models import storage
@@ -74,4 +75,3 @@ class BaseModel:
         obj_dict["created_at"] = self.created_at.isoformat()
         obj_dict["updated_at"] = self.updated_at.isoformat()
         return obj_dict
-
