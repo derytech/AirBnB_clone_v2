@@ -1,4 +1,3 @@
-
 #!/usr/bin/env bash
 # Set up the web servers for web_static deployment.
 
