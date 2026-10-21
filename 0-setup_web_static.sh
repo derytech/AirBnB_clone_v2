@@ -66,10 +66,16 @@ with open(config, "w", encoding="utf-8") as file:
 PY
 
 # Give ubuntu ownership of everything under /data.
-chown -R ubuntu:ubuntu /data
+if id ubuntu >/dev/null 2>&1; then
+    chown -R ubuntu:ubuntu /data
+else
+    echo "Warning: ubuntu user does not exist; skipping ownership change."
+fi
 
 # Validate the Nginx configuration and restart Nginx.
-nginx -t && systemctl restart nginx
+if nginx -t; then
+    service nginx restart || service nginx start
+fi
 
 # Always return a successful exit status.
 exit 0
