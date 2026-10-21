@@ -1,35 +1,32 @@
 #!/usr/bin/python3
-"""Fabric script to create a .tgz archive of web_static."""
+"""Fabric script to generate a .tgz archive from web_static."""
 
+import os
 from datetime import datetime
-from fabric import task
-from invoke import Context
-from os import path
+from fabric.api import local
 
 
-@task
-def do_pack(c):
-    """Pack the web_static folder into a timestamped .tgz archive."""
+def do_pack():
+    """Generate a .tgz archive of the web_static folder."""
     try:
-        c.run("mkdir -p versions")
+        if not os.path.exists("versions"):
+            os.makedirs("versions")
 
         filename = "versions/web_static_{}.tgz".format(
             datetime.now().strftime("%Y%m%d%H%M%S")
         )
 
         print("Packing web_static to {}".format(filename))
+        result = local("tar -cvzf {} web_static".format(filename))
 
-        c.run("tar -cvzf {} web_static".format(filename))
-
-        if not path.isfile(filename):
+        if result.failed:
             return None
 
         print(
             "web_static packed: {} -> {}Bytes".format(
-                filename, path.getsize(filename)
+                filename, os.path.getsize(filename)
             )
         )
-
         return filename
 
     except Exception:
